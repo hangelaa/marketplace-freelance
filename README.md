@@ -27,8 +27,8 @@ Design and implement a web application similar to Upwork and Ponisha, in which:
 ## Team Members
 
 - هانا حاتمی (GitHub: [hangelaa](https://github.com/hangelaa))
-- متین صادقی (GitHub: [Matin-sadeghi](https://github.com/username))
+- متین صادقی (GitHub: [Matin-sadeghi](https://github.com/Matin-sadeghi))
 
 ## Project Management
 
-- Jira board: [Add the Jira board link here](https://example.atlassian.net)
+- Jira board: [https://hatamihaana188.atlassian.net/jira/software/projects/SCRUM/boards/1](https://example.atlassian.net)

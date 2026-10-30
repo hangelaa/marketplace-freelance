@@ -4,7 +4,6 @@ Freelance Marketplace Database
 File: database/queries.sql
 
 Four important reporting queries.
-هر کوئری را می‌توان جداگانه در SSMS اجرا کرد.
 */
 
 ------------------------------------------------------------

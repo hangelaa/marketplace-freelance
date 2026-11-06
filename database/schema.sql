@@ -63,10 +63,10 @@ CREATE TABLE dbo.UserProfiles (
 GO
 
 /* 4. Skills */
-CREATE TABLE dbo.Skills (
-    SkillID     INT IDENTITY(1,1) NOT NULL,
-    SkillName   NVARCHAR(100) NOT NULL,
-
+CREATE TABLE dbo.Skills
+(
+    SkillID INT IDENTITY(1,1) NOT NULL,
+    SkillName NVARCHAR(100) COLLATE Latin1_General_100_CI_AS NOT NULL,
     CONSTRAINT PK_Skills PRIMARY KEY (SkillID),
     CONSTRAINT UQ_Skills_SkillName UNIQUE (SkillName)
 );
@@ -239,6 +239,38 @@ GO
     These are included because SQL CHECK constraints cannot safely validate
     conditions that depend on rows in other tables.
 */
+
+CREATE TRIGGER TR_Users_HashPassword
+ON dbo.Users
+INSTEAD OF INSERT
+AS
+BEGIN
+    SET NOCOUNT ON;
+
+    INSERT INTO dbo.Users
+    (
+        FirstName,
+        LastName,
+        Email,
+        Mobile,
+        PasswordHash,
+        AccountStatus,
+        UserType
+    )
+    SELECT
+        FirstName,
+        LastName,
+        Email,
+        Mobile,
+        CONVERT(
+            NVARCHAR(255),
+            HASHBYTES('SHA2_256', PasswordHash),
+            2
+        ),
+        AccountStatus,
+        UserType
+    FROM inserted;
+END;
 
 /* Admin accounts must reference Users marked as Admin */
 CREATE TRIGGER dbo.TR_AdminAccounts_RequireAdminUser

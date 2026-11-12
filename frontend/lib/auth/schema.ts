@@ -11,3 +11,5 @@ export const registerSchema = z.object({
   confirmPassword: z.string().min(1, "تکرار رمز عبور را وارد کنید."),
 }).refine((values) => values.password === values.confirmPassword, { message: "رمز عبور و تکرار آن یکسان نیستند.", path: ["confirmPassword"] });
 export type RegisterValues = z.infer<typeof registerSchema>;
+export const forgotPasswordSchema = loginSchema.pick({ email: true });
+export type ForgotPasswordValues = z.infer<typeof forgotPasswordSchema>;

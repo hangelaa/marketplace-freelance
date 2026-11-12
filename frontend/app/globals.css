@@ -231,6 +231,7 @@ button, a, input { transition: background-color 160ms ease, border-color 160ms e
 .auth-content .input-wrap input:focus { background: var(--card); }
 .auth-content .input-wrap input::placeholder { font-size: 12px; color: var(--muted-foreground); }
 .auth-content .submit-button { margin-top: 2px; min-height: 54px; justify-content: space-between; padding-inline: 20px; }
+a.submit-button { text-decoration: none; }
 .auth-content .submit-button:disabled { justify-content: center; }
 .auth-content .signup-prompt { margin: 24px 0 0; padding-top: 18px; border-top: 1px solid var(--border); align-items: center; }
 .auth-content .signup-prompt .text-link { min-height: 44px; }

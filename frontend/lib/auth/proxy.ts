@@ -11,8 +11,8 @@ function json(data: object, status = 200): Response {
   return Response.json(data, { status, headers: { "Cache-Control": "private, no-store", Vary: "Cookie" } });
 }
 export async function proxyAuth(request: Request, action: string, transport: typeof fetch = fetch): Promise<Response> {
-  if (!["login", "logout", "register", "password-reset", "me", "csrf"].includes(action)) return json({ error: "مسیر پیدا نشد." }, 404);
-  const write = ["login", "logout", "register", "password-reset"].includes(action);
+  if (!["login", "logout", "register", "password-reset", "password-reset-confirm", "me", "csrf"].includes(action)) return json({ error: "مسیر پیدا نشد." }, 404);
+  const write = ["login", "logout", "register", "password-reset", "password-reset-confirm"].includes(action);
   if (request.method !== (write ? "POST" : "GET")) return json({ error: "روش درخواست مجاز نیست." }, 405);
   // Validate the browser's public origin BEFORE mapping it to the internal hop.
   // No wildcard trusted origins, CSRF exemption, or client-supplied upstream URL.

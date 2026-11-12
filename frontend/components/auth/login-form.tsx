@@ -1,5 +1,6 @@
 "use client";
 import { useState } from "react";
+import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { AnimatePresence, motion, useReducedMotion } from "motion/react";
@@ -40,7 +41,7 @@ export function LoginForm({ sessionExpired = false, unavailable = false }: { ses
       <AnimatePresence initial={false}>{error && <motion.div key={error} className="form-feedback" role="alert" initial={reduced ? false : { opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}><CircleAlert size={18} aria-hidden="true" />{error}</motion.div>}</AnimatePresence>
       <Button className="submit-button" type="submit" disabled={isSubmitting}>{isSubmitting ? <><LoaderCircle className="animate-spin" aria-hidden="true" />در حال ورود…</> : <>ورود به حساب کاربری<ArrowLeft aria-hidden="true" /></>}</Button>
     </form>
-    <p className="signup-prompt">هنوز به پیوند نپیوستی؟ <button type="button" className="text-link" onClick={() => setNotice("ساخت حساب کاربری در این مرحله فعال نیست؛ به‌زودی در پیوند.")}>ساخت حساب کاربری <ArrowLeft size={14} aria-hidden="true" /></button></p>
+    <p className="signup-prompt">هنوز به پیوند نپیوستی؟ <Link href="/register/" className="text-link">ساخت حساب کاربری <ArrowLeft size={14} aria-hidden="true" /></Link></p>
     <p className="coming-soon" role="status" aria-live="polite">{notice}</p>
     <p className="login-help">برای ورود، از ایمیلی که با آن حساب ساخته‌ای استفاده کن.</p>
   </motion.div>;

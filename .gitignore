@@ -9,6 +9,7 @@ Thumbs.db
 # Environment variables and secrets
 .env
 .env.*
+backend/.dev-login
 
 # Logs
 *.log

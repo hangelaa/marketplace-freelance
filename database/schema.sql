@@ -6,6 +6,16 @@
     The script creates tables, constraints, indexes, and business-rule triggers.
 */
 
+-- SQL Server requires these session options when creating filtered indexes and triggers.
+SET ANSI_NULLS ON;
+SET QUOTED_IDENTIFIER ON;
+SET ANSI_PADDING ON;
+SET ANSI_WARNINGS ON;
+SET ARITHABORT ON;
+SET CONCAT_NULL_YIELDS_NULL ON;
+SET NUMERIC_ROUNDABORT OFF;
+GO
+
 USE FreelanceMarketplaceDB;
 GO
 
@@ -271,6 +281,7 @@ BEGIN
         UserType
     FROM inserted;
 END;
+GO
 
 /* Admin accounts must reference Users marked as Admin */
 CREATE TRIGGER dbo.TR_AdminAccounts_RequireAdminUser

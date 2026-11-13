@@ -1,0 +1,18 @@
+# Keep credentials, local environments, and host artifacts out of the image build context.
+.git
+.gitignore
+.env
+.env.*
+**/.env
+**/.env.*
+**/.dev-login
+**/__pycache__
+**/*.py[cod]
+**/.venv
+**/venv
+**/node_modules
+frontend
+.git/**
+*.bak
+*.trn
+*.bacpac

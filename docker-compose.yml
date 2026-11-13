@@ -1,0 +1,78 @@
+services:
+  sqlserver:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: freelance-marketplace-sqlserver
+    environment:
+      ACCEPT_EULA: "Y"
+      MSSQL_PID: Developer
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in the ignored local .env file}
+    ports:
+      - "127.0.0.1:1433:1433"
+    volumes:
+      - sqlserver_data:/var/opt/mssql
+    healthcheck:
+      test:
+        - CMD-SHELL
+        - >-
+          /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa
+          -P "$${MSSQL_SA_PASSWORD}" -b -Q "SELECT 1" >/dev/null 2>&1
+      interval: 10s
+      timeout: 5s
+      retries: 30
+      start_period: 30s
+    restart: unless-stopped
+
+  db-init:
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    container_name: freelance-marketplace-db-init
+    depends_on:
+      sqlserver:
+        condition: service_healthy
+    environment:
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD:?Set MSSQL_SA_PASSWORD in the ignored local .env file}
+      DB_NAME: FreelanceMarketplaceDB
+      DB_USER: marketplace_app
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in the ignored local .env file}
+    volumes:
+      - ./database/schema.sql:/schema/schema.sql:ro
+      - ./docker/init-sqlserver.sh:/scripts/init-sqlserver.sh:ro
+    entrypoint: ["/bin/bash", "/scripts/init-sqlserver.sh"]
+    restart: "no"
+
+  backend:
+    build:
+      context: .
+      dockerfile: backend/Dockerfile
+    container_name: freelance-marketplace-backend
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+    environment:
+      DJANGO_SECRET_KEY: ${DJANGO_SECRET_KEY:?Set DJANGO_SECRET_KEY in the ignored local .env file}
+      DJANGO_DEBUG: "true"
+      DJANGO_ALLOWED_HOSTS: 127.0.0.1,localhost,backend
+      DB_ENGINE: sqlserver
+      DB_NAME: FreelanceMarketplaceDB
+      DB_HOST: sqlserver
+      DB_PORT: "1433"
+      DB_USER: marketplace_app
+      DB_PASSWORD: ${DB_PASSWORD:?Set DB_PASSWORD in the ignored local .env file}
+      DB_DRIVER: ODBC Driver 18 for SQL Server
+      DB_EXTRA_PARAMS: Encrypt=yes;TrustServerCertificate=yes
+    ports:
+      - "127.0.0.1:8000:8000"
+    healthcheck:
+      test:
+        - CMD
+        - python
+        - -c
+        - from urllib.request import urlopen; urlopen('http://127.0.0.1:8000/login/', timeout=4).read(1)
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    restart: unless-stopped
+
+volumes:
+  sqlserver_data:
+    name: freelance_marketplace_sql_data

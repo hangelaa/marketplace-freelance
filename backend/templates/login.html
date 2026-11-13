@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="fa" dir="rtl">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#f5f7fb"><title>ورود | فریلنس‌مارکت</title>
+  <link rel="stylesheet" href="/static/login.css">
+</head>
+<body>
+  <main class="shell">
+    <section class="login-card" aria-labelledby="page-title">
+      <div class="brand" aria-label="فریلنس‌مارکت"><span class="brand-mark" aria-hidden="true">ف</span><span>فریلنس‌مارکت</span></div>
+      <p class="eyebrow">خوش آمدید</p><h1 id="page-title">ورود به حساب کاربری</h1>
+      <p class="subtitle">برای ادامه، اطلاعات حساب خود را وارد کنید.</p>
+      <form id="login-form" novalidate>
+        {% csrf_token %}
+        <label for="email">ایمیل</label>
+        <input id="email" name="email" type="email" autocomplete="username" inputmode="email" required maxlength="255" placeholder="name@example.com" aria-describedby="email-error">
+        <span class="field-error" id="email-error" aria-live="polite"></span>
+        <label for="password">رمز عبور</label>
+        <div class="password-wrap"><input id="password" name="password" type="password" autocomplete="current-password" required aria-describedby="password-error"><button class="toggle" type="button" id="toggle-password" aria-label="نمایش رمز عبور" aria-pressed="false">نمایش</button></div>
+        <span class="field-error" id="password-error" aria-live="polite"></span>
+        <p class="form-error" id="form-error" role="alert" aria-live="assertive"></p>
+        <button class="submit" type="submit" id="submit-button">ورود</button>
+      </form>
+      <div class="links"><a href="#" aria-disabled="true" data-unavailable>ایجاد حساب جدید <small>به‌زودی</small></a><a href="#" aria-disabled="true" data-unavailable>رمز عبور را فراموش کرده‌اید؟ <small>به‌زودی</small></a></div>
+      <p class="security-note"><span aria-hidden="true">●</span> ارتباط امن و محافظت‌شده</p>
+    </section>
+    <aside class="visual" aria-hidden="true"><div class="visual-content"><span class="visual-tag">فرصت‌های حرفه‌ای</span><h2>مهارتت را<br>به فرصت تبدیل کن.</h2><p>در بازار کار مستقل، قدم بعدی‌ات را پیدا کن.</p><div class="decor"><i></i><i></i><i></i><i></i><i></i></div></div><span class="visual-orb"></span></aside>
+  </main>
+  <script src="/static/login.js" defer></script>
+</body>
+</html>

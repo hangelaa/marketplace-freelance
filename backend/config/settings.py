@@ -74,3 +74,17 @@ CSRF_COOKIE_SAMESITE = "Lax"
 CSRF_COOKIE_SECURE = not DEBUG
 SECURE_CONTENT_TYPE_NOSNIFF = True
 X_FRAME_OPTIONS = "DENY"
+
+AUTH_PASSWORD_VALIDATORS = [
+    {"NAME": "django.contrib.auth.password_validation.UserAttributeSimilarityValidator"},
+    {"NAME": "django.contrib.auth.password_validation.MinimumLengthValidator"},
+    {"NAME": "django.contrib.auth.password_validation.CommonPasswordValidator"},
+    {"NAME": "django.contrib.auth.password_validation.NumericPasswordValidator"},
+]
+PASSWORD_RESET_TIMEOUT = 3600
+FRONTEND_ORIGIN = os.environ.get("FRONTEND_ORIGIN", "http://127.0.0.1:3000").rstrip("/")
+EMAIL_BACKEND = os.environ.get("EMAIL_BACKEND", "django.core.mail.backends.console.EmailBackend")
+DEFAULT_FROM_EMAIL = os.environ.get("DEFAULT_FROM_EMAIL", "Marketplace Freelance <no-reply@marketplace-freelance.local>")
+# Failed-login rate limit per client IP (see accounts/login_ratelimit.py).
+LOGIN_FAILURE_LIMIT = 5
+LOGIN_FAILURE_WINDOW = 300  # seconds

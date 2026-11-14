@@ -7,6 +7,8 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
 
+from accounts import login_ratelimit
+
 
 @ensure_csrf_cookie
 def login_page(request):
@@ -31,6 +33,12 @@ def _payload(request):
 
 @require_POST
 def api_login(request):
+    ip = login_ratelimit.client_ip(request)
+    wait = login_ratelimit.retry_after(ip)
+    if wait:
+        response = JsonResponse({"error": "تعداد تلاش‌های ناموفق زیاد است. لطفاً بعداً دوباره تلاش کنید."}, status=429)
+        response["Retry-After"] = str(wait)
+        return response
     data = _payload(request)
     if data is None:
         return JsonResponse({"error": "درخواست نامعتبر است."}, status=400)
@@ -42,6 +50,7 @@ def api_login(request):
         return JsonResponse({"error": "ایمیل یا رمز عبور نامعتبر است."}, status=400)
     user = authenticate(request, email=email.strip(), password=password)
     if user is None:
+        login_ratelimit.register_failure(ip)
         return JsonResponse({"error": "نام کاربری یا رمز عبور اشتباه است."}, status=401)
     login(request, user)
     return JsonResponse({"ok": True, "next": "/welcome/"})

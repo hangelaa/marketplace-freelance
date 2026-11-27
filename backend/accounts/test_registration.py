@@ -3,6 +3,7 @@ import re
 from unittest.mock import patch
 
 from django.core import mail
+from django.core.cache import cache
 from django.db import connection
 from django.test import TestCase
 from django.urls import reverse
@@ -35,6 +36,9 @@ class RegistrationFlowTests(TestCase):
             cursor.execute("ATTACH DATABASE ':memory:' AS dbo")
             cursor.execute(USERS_DDL)
         super().setUpClass()
+
+    def setUp(self):
+        cache.clear()  # شمارنده‌ی محدودیت درخواست بین تست‌ها پاک شود
 
     def post(self, name, payload):
         return self.client.post(reverse(name), data=json.dumps(payload), content_type="application/json")

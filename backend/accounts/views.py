@@ -7,8 +7,7 @@ from django.shortcuts import redirect, render
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.decorators.http import require_GET, require_POST
 
-from accounts import login_ratelimit
-
+from accounts import throttle
 
 @ensure_csrf_cookie
 def login_page(request):
@@ -31,30 +30,61 @@ def _payload(request):
         return None
 
 
+
 @require_POST
 def api_login(request):
-    ip = login_ratelimit.client_ip(request)
-    wait = login_ratelimit.retry_after(ip)
+    ip = throttle.get_client_ip(request)
+
+    wait = throttle.blocked_seconds(ip, "login")
     if wait:
-        response = JsonResponse({"error": "تعداد تلاش‌های ناموفق زیاد است. لطفاً بعداً دوباره تلاش کنید."}, status=429)
-        response["Retry-After"] = str(wait)
-        return response
+        return throttle.too_many_requests_response(wait)
+
     data = _payload(request)
     if data is None:
         return JsonResponse({"error": "درخواست نامعتبر است."}, status=400)
+
     email = data.get("email")
     password = data.get("password")
-    if not isinstance(email, str) or not email.strip() or not isinstance(password, str) or not password:
-        return JsonResponse({"error": "ایمیل و رمز عبور را وارد کنید."}, status=400)
-    if len(email) > 255 or len(password) > 1024 or not re.fullmatch(r"[^\s@]+@[^\s@]+\.[^\s@]+", email.strip()):
-        return JsonResponse({"error": "ایمیل یا رمز عبور نامعتبر است."}, status=400)
-    user = authenticate(request, email=email.strip(), password=password)
+
+    if (
+        not isinstance(email, str)
+        or not email.strip()
+        or not isinstance(password, str)
+        or not password
+    ):
+        return JsonResponse(
+            {"error": "ایمیل و رمز عبور را وارد کنید."},
+            status=400
+        )
+
+    if (
+        len(email) > 255
+        or len(password) > 1024
+        or not re.fullmatch(
+            r"[^\s@]+@[^\s@]+\.[^\s@]+",
+            email.strip()
+        )
+    ):
+        return JsonResponse(
+            {"error": "ایمیل یا رمز عبور نامعتبر است."},
+            status=400
+        )
+
+    user = authenticate(
+        request,
+        email=email.strip(),
+        password=password
+    )
+
     if user is None:
-        login_ratelimit.register_failure(ip)
-        return JsonResponse({"error": "نام کاربری یا رمز عبور اشتباه است."}, status=401)
+        throttle.record_failure(ip, "login")
+        return JsonResponse(
+            {"error": "نام کاربری یا رمز عبور اشتباه است."},
+            status=401
+        )
+
     login(request, user)
     return JsonResponse({"ok": True, "next": "/welcome/"})
-
 
 @require_POST
 def api_logout(request):

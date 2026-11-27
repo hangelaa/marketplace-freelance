@@ -4,6 +4,7 @@
 """
 import logging
 
+from .import throttle
 from django.conf import settings
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.tokens import PasswordResetTokenGenerator
@@ -41,6 +42,11 @@ token_generator = ResetTokenGenerator()
 @require_POST
 def api_password_reset(request):
     """POST /api/auth/password-reset/ ← بدنه: {email}. همیشه پاسخ یکسان می‌دهد."""
+    client_ip = throttle.get_client_ip(request)                    # IP واقعی کاربر
+    wait_seconds = throttle.blocked_seconds(client_ip, "password-reset")  # آیا مسدود است؟
+    if wait_seconds:
+        return throttle.too_many_requests_response(wait_seconds, "درخواست‌های بازیابی رمز عبور")
+    throttle.record_attempt(client_ip, "password-reset")           # هر درخواست یک بار شمرده می‌شود
     data = _payload(request)
     if data is None:
         return JsonResponse({"error": "درخواست نامعتبر است."}, status=400)

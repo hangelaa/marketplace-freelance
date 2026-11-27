@@ -9,6 +9,10 @@ async function request<T>(action: string, init: RequestInit = {}): Promise<T> {
     response = await fetch(`/api/auth/${action}/`, { ...init, credentials: "same-origin", cache: "no-store", signal: AbortSignal.timeout(15_000) });
   } catch { throw new AuthError("ارتباط با سرور برقرار نشد. اتصال اینترنت را بررسی و دوباره تلاش کنید.", 0); }
   if (!response.ok) {
+    if (response.status === 429) {
+      const data = await response.json().catch(() => null) as { error?: unknown } | null;
+      throw new AuthError(typeof data?.error === "string" ? data.error : "تعداد درخواست‌ها بیش از حد مجاز است. چند دقیقه بعد دوباره تلاش کنید.", 429);
+    }
     if (response.status === 401 && action === "login") throw new AuthError("ایمیل یا رمز عبور درست نیست. دوباره تلاش کنید.", 401);
     if (["register", "password-reset", "password-reset-confirm"].includes(action) && (response.status === 400 || response.status === 409)) {
       const data = await response.json().catch(() => null) as { error?: unknown } | null;

@@ -8,6 +8,7 @@ const rules: { pattern: RegExp; methods: string[] }[] = [
   { pattern: /^projects\/[1-9]\d*\/publish\/$/, methods: ["POST"] },
   { pattern: /^projects\/[1-9]\d*\/proposals\/$/, methods: ["GET", "POST"] },
   { pattern: /^proposals\/[1-9]\d*\/(accept|reject|withdraw)\/$/, methods: ["POST"] },
+  { pattern: /^profile\/$/, methods: ["GET", "PUT"] },
 ];
 function json(data: object, status: number) {
   return Response.json(data, { status, headers: { "Cache-Control": "private, no-store", Vary: "Cookie" } });

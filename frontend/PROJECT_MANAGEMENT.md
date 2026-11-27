@@ -8,6 +8,7 @@
 - `/projects/`: freelancer discovery, backend title/description search, category filtering and backend pagination.
 - `/projects/[id]/`: shared detail. Owners review received proposals; eligible non-owners submit proposals.
 - `/my/proposals/`: sent proposals, status tracking, local filtering and confirmed withdrawal.
+- `/profile/`: view and edit the user profile (first/last name, professional title, bio, location, skills). Email is read-only. Admin accounts get a 403 state.
 - `/welcome/` is preserved as the post-login entry. After session verification it routes freelancer intent to `/projects/`; employer or unspecified intent goes to `/my/projects/`. Both workspaces remain reachable from shared navigation.
 
 Registration, login, password recovery, role selection, Django sessions and CSRF remain the existing mechanisms. No second identity store, bearer token, role mutation or credential storage is introduced. Employer/freelancer are workflow intentions; a Regular account may use both. Admin/ownership restrictions are enforced by Django. The form establishes participation permission through the existing `GET /api/my/projects/` endpoint, not the onboarding cookie.
@@ -21,6 +22,7 @@ Registration, login, password recovery, role selection, Django sessions and CSRF
 - `components/marketplace/project-detail.tsx` and its CSS module: shared detail, received proposals, freelancer proposal review/submission.
 - `components/marketplace/browse-projects.tsx`: server-paginated discovery.
 - `components/marketplace/my-proposals.tsx`: sent proposal tracking/withdrawal.
+- `components/marketplace/profile.tsx`: profile view and editor (reuses the project form catalog styles for the skill picker).
 - `components/marketplace/primitives.tsx`: shared headings, status badges, empty/loading/error states, field errors and native modal confirmations.
 - `components/marketplace/hooks.ts`: keyed, race-safe reads/reload plus dirty-form refresh/close and ordinary in-app link protection. No automatic draft storage.
 - `lib/api/marketplace.ts`, `marketplace-proxy.ts`, `app/api/marketplace/[...path]/route.ts`: typed browser requests and a restricted same-origin bridge.
@@ -42,6 +44,7 @@ The browser bridge `/api/marketplace/...` maps only an explicit path/method allo
 | `proposals/<id>/accept/` | POST | Atomic backend acceptance |
 | `proposals/<id>/reject/` | POST | Reject Pending |
 | `proposals/<id>/withdraw/` | POST | Withdraw own Pending |
+| `profile/` | GET, PUT | User profile view and edit |
 
 Session cookies, all Set-Cookie flags, Origin checks and CSRF validation are preserved. The bridge is not an open proxy: arbitrary URLs, paths or methods cannot be forwarded. Reads are private/no-store; requests have bounded timeouts. Discovery forwards only supported `q`, `category`, `page`, `page_size` query fields. JSON field errors remain connected to inputs; 401 returns to login, 403/404 display explicit permission/not-found states, and 409 preserves useful draft information.
 

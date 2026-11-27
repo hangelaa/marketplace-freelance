@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { BriefcaseBusiness, Compass, FileCheck2, ArrowUpLeft, House } from "lucide-react";
+import { BriefcaseBusiness, Compass, FileCheck2, ArrowUpLeft, House, UserRound } from "lucide-react";
 import { Brand } from "@/components/branding/brand";
 import { LogoutButton } from "@/components/auth/logout-button";
 import { SessionGuard } from "@/components/auth/session-guard";
@@ -12,6 +12,7 @@ const links = [
   { href: "/my/projects/", label: "پروژه‌های من", detail: "مدیریت و دریافت پیشنهاد", icon: BriefcaseBusiness },
   { href: "/projects/", label: "کشف پروژه‌ها", detail: "فرصت‌های تازه برای همکاری", icon: Compass },
   { href: "/my/proposals/", label: "پیشنهادهای من", detail: "پیگیری مسیر همکاری", icon: FileCheck2 },
+  { href: "/profile/", label: "پروفایل من", detail: "معرفی، عنوان حرفه‌ای و مهارت‌ها", icon: UserRound },
 ];
 export function WorkspaceShell({ name, children }: { name: string; children: ReactNode }) {
   const pathname = usePathname();

@@ -36,3 +36,11 @@ export interface MyProposal extends Proposal {
 export interface ProposalPayload { amount: string; cover_letter: string; estimated_days: number; estimated_hours?: string | null }
 export interface Results<T> { results: T[] }
 export interface ProjectPage extends Results<Project> { page: number; page_size: number; total: number }
+export interface Profile {
+  first_name: string; last_name: string; email: string;
+  professional_title: string | null; bio: string | null; location: string | null; skills: CatalogItem[];
+}
+export interface ProfilePayload {
+  first_name: string; last_name: string; professional_title: string | null;
+  bio: string | null; location: string | null; skill_ids: number[];
+}

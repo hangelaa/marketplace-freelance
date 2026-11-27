@@ -1,4 +1,4 @@
-from django.urls import path
+from django.urls import path,include
 from accounts import password_reset, registration, views
 
 urlpatterns = [
@@ -11,4 +11,5 @@ urlpatterns = [
     path("api/auth/register/", registration.api_register, name="api-register"),
     path("api/auth/password-reset/", password_reset.api_password_reset, name="api-password-reset"),
     path("api/auth/password-reset-confirm/", password_reset.api_password_reset_confirm, name="api-password-reset-confirm"),
+    path("api/", include("marketplace.urls")),
 ]

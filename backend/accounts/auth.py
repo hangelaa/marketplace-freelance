@@ -1,6 +1,7 @@
 import hashlib
 import hmac
 import re
+from django.utils.crypto import salted_hmac
 from dataclasses import dataclass
 
 from django.contrib.auth.hashers import check_password, identify_hasher, make_password
@@ -41,6 +42,15 @@ class MarketplaceUser:
     @property
     def full_name(self): return f"{self.first_name} {self.last_name}".strip()
     def get_username(self): return self.email
+    @property
+    def password(self):
+       return self.password_hash
+
+    def get_session_auth_hash(self):
+       return salted_hmac(
+        "django.contrib.auth.models.AbstractBaseUser.get_session_auth_hash",
+        self.password_hash,
+    ).hexdigest()
     def __str__(self): return self.full_name or self.email
 
 

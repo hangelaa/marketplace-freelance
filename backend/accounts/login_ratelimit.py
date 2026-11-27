@@ -15,6 +15,7 @@ import time
 
 from django.conf import settings
 from django.core.cache import cache
+from .throttle import _now
 
 _PREFIX = "login-fail"
 
@@ -46,8 +47,7 @@ def retry_after(ip):
     reset_at = cache.get(reset_key)
     if reset_at is None:
         return _window()
-    return max(1, math.ceil(reset_at - time.time()))
-
+    return max(1, math.ceil(reset_at - _now()))
 
 def register_failure(ip):
     count_key, reset_key = _keys(ip)

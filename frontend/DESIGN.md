@@ -111,3 +111,25 @@ Inputs/actions: 10px radius and 52px height. Large containers: 22px. The mark us
 - Do not interpret the collaboration composition as a live marketplace feature or selectable project.
 - Preserve RTL logical positioning. Form DOM comes before story DOM; do not reverse with visual-only ordering.
 - Build, verify actual form semantics and inspect desktop/mobile rendering after integrating with the parent-owned auth module. This document is not evidence of an executed browser check.
+
+## Public marketplace entry and onboarding
+
+`app/page.tsx` is the public landing route. `components/marketing/landing-page.tsx` composes the existing `Brand`, `StoryPanel`, Lucide icons and `Button`; its CSS module scopes the public-page layout without changing the authentication shell. Keep the same slate canvas, white surfaces, deep-indigo story treatment, 10px actions, 15px icon tiles, 22px containers and 12/24/40/64px spacing rhythm. Navigation wraps into a second row on tablet; content grids become single-column on mobile. No fabricated marketplace statistics or endorsements.
+
+Anchor buttons need explicit scoped foreground/background roles: the unlayered global `a { color: inherit }` can override Tailwind's layered foreground utility on `Button asChild`. Keep primary link text white and outline link text ink; verify computed colors rather than relying on class names.
+
+`/role-selection/` uses native radio inputs inside labelled cards, with one shared name, browser arrow-key navigation, visible focus outlines, indigo selected border/check, and a disabled-until-selected Continue action. Employer uses the existing indigo icon surface; freelancer uses the existing mint surface and readable teal foreground. At 600px and below, stack the cards in DOM order. Keep radio descriptions and feedback textual; color is not the only selection cue. Shared reduced-motion rules apply.
+
+Employer/freelancer are onboarding intentions, not backend permission identifiers. The validated preference is a 24-hour HttpOnly, SameSite=Lax cookie, set by a same-origin server action and marked Secure for configured production HTTPS. Registration continues to send only `{ fullName, email, password }`. It redirects to login, then the existing protected welcome route, which now forwards to the implemented employer or freelancer workspace. Never infer account privileges from this preference. Existing registration deep links remain supported.
+
+The catalog API requires authentication. Anonymous visitors see a login prompt; verified sessions load actual categories server-side with their existing cookies, no-store caching and a bounded timeout. Empty and unavailable catalogs have explicit states; errors offer a real reload action. Do not substitute illustrative categories for unavailable data or expose protected reference data by changing backend permissions.
+
+## Project management workspace
+
+The protected `app/(workspace)` group extends the existing signature, not the promotional/auth composition. `workspace.css` is scoped beneath `.marketplace`; form/detail-specific rules live in their CSS modules. Keep slate canvas, white bordered surfaces, indigo actions and the existing mint/error semantic roles. Reuse Brand, Button, Input, LogoutButton and SessionGuard. Do not copy the large decorative story panel into operational pages.
+
+Use a 216px desktop navigation rail with a growing minmax content track and 40px separation; below 900px the existing destinations become a horizontal, keyboard-focusable navigation strip. Use 24px content spacing, 22px large surface corners, 10px controls and 48px minimum primary actions. At 600px, stack filters/forms/cards, retain two-column overview metrics, and keep long comparison tables within a labelled horizontal scroll region rather than widening the page. Inputs remain 16px. Source-owned responsive rules and visual verification results are distinct; see the current verification report for what was actually rendered.
+
+Prefer one four-column overview surface and a scan-friendly employer table over decorative metric cards or charts. Counts derive from all actual owned projects, independent of local filters. Discovery uses two-column project cards that stack on mobile. Received proposals use a comparison table with on-demand freelancer/cover-letter disclosure. Status badges always include translated text, not color alone.
+
+Forms group description/requirements, pricing/deadline and live catalog choices, then present an explicit review. Do not invent separate requirement fields, currencies or unsupported lifecycle actions. Native radio/checkbox/select/date controls and native confirmation dialogs preserve keyboard operation. Dialogs have a labelled heading, cancel-first focus, Escape handling, bounded scrolling and pending/error states. Dirty forms guard refresh/close and ordinary in-app link navigation without adding a second draft persistence mechanism. All transitions inherit the shared reduced-motion policy.

@@ -7,7 +7,7 @@ from types import SimpleNamespace
 from django.contrib.auth.hashers import make_password
 from django.contrib.auth.password_validation import validate_password
 from django.core.exceptions import ValidationError
-from django.db import IntegrityError, connection
+from django.db import IntegrityError, connection, transaction
 from django.http import JsonResponse
 from django.views.decorators.http import require_POST
 
@@ -83,13 +83,22 @@ def api_register(request):
     if _fetch_user_by_email(email) is not None:
         return JsonResponse({"error": "این ایمیل قبلاً ثبت شده است."}, status=409)
 
+    encoded_password = make_password(password)
     try:
-        with connection.cursor() as cursor:
-            # AccountStatus, UserType, CreatedAt, UpdatedAt مقدار پیش‌فرض خود دیتابیس را می‌گیرند
-            cursor.execute(
-                "INSERT INTO dbo.Users (FirstName, LastName, Email, PasswordHash) VALUES (%s, %s, %s, %s)",
-                [first_name, last_name, email, make_password(password)],  # فقط هش PBKDF2 ذخیره می‌شود
-            )
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                # The Users INSERT trigger hashes the supplied plaintext as the legacy SHA-256 format.
+                # Replace it in the same transaction with Django's PBKDF2 hash (UPDATE bypasses the INSERT trigger).
+                cursor.execute(
+                    "INSERT INTO dbo.Users (FirstName, LastName, Email, PasswordHash) VALUES (%s, %s, %s, %s)",
+                    [first_name, last_name, email, password],
+                )
+                cursor.execute(
+                    "UPDATE dbo.Users SET PasswordHash = %s WHERE Email = %s",
+                    [encoded_password, email],
+                )
+                if cursor.rowcount != 1:
+                    raise RuntimeError("New user password hash could not be finalized.")
     except IntegrityError:
         # دو ثبت‌نام همزمان با یک ایمیل: قید UNIQUE دیتابیس جلوی دومی را می‌گیرد
         return JsonResponse({"error": "این ایمیل قبلاً ثبت شده است."}, status=409)

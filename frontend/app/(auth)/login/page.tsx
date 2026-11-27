@@ -5,9 +5,9 @@ import { LoginForm } from "@/components/auth/login-form";
 import { AuthShell } from "@/components/layout/auth-shell";
 export const metadata: Metadata = { title: "ورود به حساب" };
 export const dynamic = "force-dynamic";
-export default async function LoginPage({ searchParams }: { searchParams: Promise<{ expired?: string }> }) {
+export default async function LoginPage({ searchParams }: { searchParams: Promise<{ expired?: string; registered?: string }> }) {
   const session = await getSession();
   if (session.status === "authenticated") redirect("/welcome/");
   const params = await searchParams;
-  return <AuthShell><LoginForm sessionExpired={params.expired === "1"} unavailable={session.status === "unavailable"} /></AuthShell>;
+  return <AuthShell><LoginForm registered={params.registered === "1"} sessionExpired={params.expired === "1"} unavailable={session.status === "unavailable"} /></AuthShell>;
 }

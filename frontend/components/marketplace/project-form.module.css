@@ -1,0 +1,110 @@
+.fields {
+  display: grid;
+  gap: 0;
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.description {
+  min-block-size: 14rem;
+  resize: vertical;
+  line-height: 2;
+}
+
+.fields > section {
+  display: grid;
+  gap: 24px;
+}
+
+.review {
+  display: grid;
+  gap: 24px;
+}
+
+.catalog {
+  min-inline-size: 0;
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.catalog legend {
+  margin-block-end: 0.5rem;
+  font-weight: 600;
+}
+
+.options {
+  max-block-size: 15rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 0.5rem;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+}
+
+.option {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+  min-block-size: 44px;
+  padding: 0.4rem;
+  overflow-wrap: anywhere;
+  cursor: pointer;
+}
+
+.option input {
+  flex: 0 0 auto;
+  inline-size: 1.1rem;
+  block-size: 1.1rem;
+  accent-color: var(--primary);
+}
+
+.option:focus-within {
+  outline: 2px solid var(--ring);
+  outline-offset: -2px;
+  border-radius: 8px;
+}
+
+.feedback:empty {
+  display: none;
+}
+
+.feedback:focus-visible {
+  outline: 2px solid var(--ring);
+  outline-offset: 4px;
+}
+
+.preview {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.summary {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.25rem;
+  margin: 0;
+}
+
+.summary div {
+  min-inline-size: 0;
+}
+
+.summary dt {
+  margin-block-end: 0.3rem;
+  color: var(--muted-foreground);
+  font-size: 0.85rem;
+}
+
+.summary dd {
+  margin: 0;
+  overflow-wrap: anywhere;
+}
+
+@media (max-width: 600px) {
+  .summary {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

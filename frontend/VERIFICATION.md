@@ -1,5 +1,30 @@
 # گزارش بررسی پیوند
 
+## Project management — current validation
+
+- Implemented protected employer management, shared create/edit/review, shared project detail, integrated proposal review/accept/reject, freelancer discovery/submission, and sent proposal tracking/withdrawal. Routes and contracts are documented in `PROJECT_MANAGEMENT.md`.
+- Reused existing branding, session/CSRF, Button/Input, tokens, font and icons. No dependencies, backend source edits, schema changes, mock data or persistent verification records were added for this feature.
+- `npm run lint`, `npm run build` and `npm run typecheck` passed on the integrated module. The production manifest contains all six workspace page routes and the restricted marketplace bridge.
+- Anonymous live probes: marketplace project list, owned list and detail returned 401; an unrecognized bridge path returned 404; GET on a POST-only decision path returned 405. Cross-origin POST and same-origin POST without CSRF each returned 403. Protected workspace navigation in the managed browser redirected to login. These checks prove routing/guards, not authorized writes.
+- The existing signed-in native Chrome employer empty-state dashboard was visually inspected. The separate managed browser had no marketplace session; login saving was declined, and no authentication bypass was attempted. Authenticated mutation flows and mobile/tablet workspace layouts remain unverified. No success claim for create/edit/publish/submit/accept/reject/withdraw is based solely on compilation.
+- No automated tests or test harnesses were created, modified or executed for this feature, per request. Earlier test counts below are historical, not evidence for this module. Existing browser tests that assert a static welcome page will need to reflect its new workspace redirect when test work is authorized.
+- Backend limitations remain explicit: no currency field; no cancel/complete/delete endpoints; unpaginated owner/proposal lists; Regular/Admin permissions, not persisted employer/freelancer roles.
+
+## Landing and role-selection implementation — previous validation
+
+- Public `/` now includes navigation, employer/freelancer hero actions, workflow, authenticated catalog states, dedicated audience sections, final CTA and footer. `/role-selection/` provides native keyboard-accessible radio cards, selected/hover/focus states, and a disabled/pending Continue action.
+- Reused Brand, StoryPanel, Button, AuthShell, existing auth forms, Vazirmatn, Lucide and semantic CSS tokens. No new dependencies, database schema changes, permission roles or backend endpoints.
+- The server action validates employer/freelancer and stores browser-local onboarding intent in a 24-hour HttpOnly cookie. Registration payload remains unchanged. Fixed its success destination to login because the backend returns 201 without creating a session. Login still reaches protected `/welcome/`, which reflects intent and explicitly identifies the missing dashboard UI.
+- `npm run lint`, `npm run typecheck`, `npm test` (9 tests), and `npm run build`: passed.
+- Production Chrome Playwright run: 25 tests passed. Includes both role preferences surviving fixture login/refresh, authenticated onboarding redirects, keyboard selection and cookie readback, hero/navigation links, registration conflict/loading/success using intercepted responses, existing CSRF/session/logout tests, and layouts at 1440/768/390/320px without horizontal overflow.
+- Updated stale pre-existing browser assertions to match the existing login heading, real password-recovery link and current keyboard order; production login markup was not changed to satisfy obsolete expectations.
+- Backend: 55 existing accounts/marketplace tests passed inside an isolated disposable SQLite container using the checked-out source. Existing user edits to registration and its tests were preserved, not authored by this task.
+- Visually inspected desktop landing and role-selection layouts and mobile role-selection rendering. Verified actual primary-anchor computed foreground/background colors after fixing a global-anchor/Tailwind cascade conflict locally to the marketing CSS.
+- Browser authentication used the existing disposable Django identity fixture with real Django CSRF and SQLite sessions on :8001 and production Next on :3001. Registration UI responses were mocked; no persistent SQL Server accounts were created. Catalog failure/retry rendering was exercised against the fixture, which has no catalog tables. Live SQL Server signup and authenticated catalog values were not verified.
+- Production build regenerates route types; an initial standalone typecheck encountered stale generated types for the former login location. Build followed by typecheck passed without disabling checks or editing tsconfig.
+
+The original report below is historical and describes the earlier login-only implementation; its feature inventory and environment observations are not the current state.
+
 ## نتیجه پیاده‌سازی
 
 فرانت‌اند واقعی در frontend ایجاد شد؛ شامل Next.js App Router، TypeScript سخت‌گیرانه، Tailwind v4، Button/Input مبتنی بر الگوی open-code shadcn، Radix Slot، Lucide، Motion، React Hook Form و Zod. نسخه‌های مستقیم ثابت و lockfile موجود است. فونت Vazirmatn Variable به‌صورت محلی ارائه می‌شود.

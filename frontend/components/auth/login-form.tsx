@@ -9,7 +9,7 @@ import { loginSchema, type LoginValues } from "@/lib/auth/schema";
 import { login } from "@/lib/api/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-export function LoginForm({ sessionExpired = false, unavailable = false }: { sessionExpired?: boolean; unavailable?: boolean }) {
+export function LoginForm({ sessionExpired = false, unavailable = false, registered = false }: { sessionExpired?: boolean; unavailable?: boolean; registered?: boolean }) {
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState("");
   const reduced = useReducedMotion();
@@ -24,6 +24,7 @@ export function LoginForm({ sessionExpired = false, unavailable = false }: { ses
     <span className="eyebrow">ادامهٔ مسیر، با پیوند</span>
     <h1 className="form-heading">ورود به حساب کاربری</h1>
     <p className="form-description">خوش برگشتی! برای ادامه، ایمیل و رمز عبورت را وارد کن.</p>
+    {registered && <p className="coming-soon" role="status">حسابت ساخته شد. برای ادامه، با ایمیل و رمز عبورت وارد شو.</p>}
     {(sessionExpired || unavailable) && <p className="form-feedback session-feedback" role="status">{unavailable ? "ارتباط با سرور موقتاً قطع است. دوباره تلاش کنید." : "نشست شما پایان یافته است. برای ادامه دوباره وارد شوید."}</p>}
     <form className="login-form" onSubmit={handleSubmit(submit)} noValidate aria-busy={isSubmitting}>
       <div className="field-group">
@@ -40,7 +41,7 @@ export function LoginForm({ sessionExpired = false, unavailable = false }: { ses
       <AnimatePresence initial={false}>{error && <motion.div key={error} className="form-feedback" role="alert" initial={reduced ? false : { opacity: 0, y: -4 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}><CircleAlert size={18} aria-hidden="true" />{error}</motion.div>}</AnimatePresence>
       <Button className="submit-button" type="submit" disabled={isSubmitting}>{isSubmitting ? <><LoaderCircle className="animate-spin" aria-hidden="true" />در حال ورود…</> : <>ورود به حساب کاربری<ArrowLeft aria-hidden="true" /></>}</Button>
     </form>
-    <p className="signup-prompt">هنوز به پیوند نپیوستی؟ <Link href="/register/" className="text-link">ساخت حساب کاربری <ArrowLeft size={14} aria-hidden="true" /></Link></p>
+    <p className="signup-prompt">هنوز به پیوند نپیوستی؟ <Link href="/role-selection/" className="text-link">ساخت حساب کاربری <ArrowLeft size={14} aria-hidden="true" /></Link></p>
     <p className="login-help">برای ورود، از ایمیلی که با آن حساب ساخته‌ای استفاده کن.</p>
   </motion.div>;
 }

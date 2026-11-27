@@ -1,0 +1,34 @@
+.root { min-width: 0; }
+.navigation { display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap; }
+.navigation a, .textLink { color: var(--primary); text-decoration: underline; text-underline-offset: 4px; }
+.facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 24px; margin: 0; padding-bottom: 24px; border-bottom: 1px solid var(--border); }
+.facts dt, .profile dt { color: var(--muted-foreground); font-size: 13px; }
+.facts dd, .profile dd { margin: 5px 0 0; overflow-wrap: anywhere; font-weight: 600; }
+.budget { font-size: 24px; color: var(--primary); }
+.description { margin-block: 24px; line-height: 2.1; overflow-wrap: anywhere; }
+.taxonomy { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.taxonomy h3, .expanded h3, .review h3 { font-size: 14px; font-weight: 700; margin-bottom: 10px; }
+.sort { display: grid; gap: 6px; min-width: 175px; font-size: 13px; color: var(--muted-foreground); }
+.table { min-width: 760px; }
+.table td { vertical-align: top; }
+.caption { text-align: start; padding: 12px 24px; color: var(--muted-foreground); font-size: 13px; }
+.skills { max-width: 280px; margin-top: 10px; }
+.secondary { display: block; margin-top: 8px; color: var(--muted-foreground); font-size: 12px; }
+.rowActions { display: flex; gap: 8px; flex-wrap: wrap; max-width: 250px; }
+.expanded { padding: 16px; border-inline-start: 3px solid var(--primary); background: var(--muted); border-radius: 10px; }
+.expanded p, .review p { overflow-wrap: anywhere; line-height: 2; }
+.profile { display: flex; flex-wrap: wrap; gap: 16px 40px; margin: 0 0 20px; }
+.expanded h3:not(:first-child) { margin-top: 18px; }
+.fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.fieldset > :global(.pm-actions) { margin-top: 24px; }
+.letter { margin-top: 24px; }
+.letter textarea { resize: vertical; min-height: 170px; line-height: 2; }
+.review { margin-block: 20px; padding: 16px; background: var(--muted); border-radius: 10px; max-height: 45vh; overflow: auto; }
+@media (max-width: 700px) {
+  .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 20px 16px; }
+  .taxonomy { grid-template-columns: 1fr; gap: 20px; }
+  .budget { font-size: 20px; }
+  .sort { width: 100%; }
+  .navigation { align-items: stretch; }
+  .expanded { padding: 12px; }
+}

@@ -1,0 +1,34 @@
+.page { --page-gap: 24px; min-height: 100svh; display: flex; flex-direction: column; padding: 32px clamp(20px, 5vw, 64px) 24px; }
+.header, .footer { display: flex; align-items: center; justify-content: space-between; gap: var(--page-gap); }
+.header > a:last-child, .footer a { display: inline-flex; align-items: center; min-height: 44px; }
+.main { width: 100%; max-width: 880px; margin: auto; padding-block: 64px 40px; }
+.intro { text-align: center; margin-bottom: 40px; }
+.intro h1 { font-size: clamp(26px, 3vw, 34px); font-weight: 800; line-height: 1.6; margin: 0 0 12px; }
+.intro p { color: var(--muted-foreground); line-height: 2; margin: 0; }
+.fieldset { border: 0; margin: 0; padding: 0; min-width: 0; }
+.legend { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip-path: inset(50%); white-space: nowrap; }
+.cards { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--page-gap); }
+.card { position: relative; display: flex; cursor: pointer; min-width: 0; }
+.card input { position: absolute; width: 1px; height: 1px; opacity: 0; }
+.cardSurface { width: 100%; display: flex; flex-direction: column; border: 1px solid var(--border); border-radius: 22px; padding: 32px; background: var(--card); box-shadow: var(--shadow-input); transition: border-color 220ms ease, box-shadow 220ms ease, background-color 220ms ease; }
+.cardTop { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+.icon { width: 64px; height: 64px; display: grid; place-items: center; border-radius: 15px; background: var(--secondary); color: var(--primary); }
+.mint { background: var(--avatar-mint); color: var(--mint-foreground); }
+.indicator { display: grid; place-items: center; width: 24px; height: 24px; border-radius: 50%; border: 1px solid var(--input); color: var(--primary-foreground); }
+.title { font-size: 24px; font-weight: 800; margin-bottom: 8px; }
+.description { color: var(--muted-foreground); font-size: 13px; line-height: 2; }
+.benefits { display: flex; flex-direction: column; gap: 12px; margin-block: 24px; font-size: 13px; }
+.benefits > span { display: flex; gap: 10px; align-items: center; }
+.benefits svg { color: var(--primary); flex-shrink: 0; }
+.selection { display: flex; justify-content: space-between; align-items: center; margin-top: auto; padding-top: 20px; border-top: 1px solid var(--border); color: var(--muted-foreground); font-size: 12px; }
+.card input:checked + .cardSurface { border-color: var(--primary); background: color-mix(in srgb, var(--secondary) 35%, var(--card)); box-shadow: 0 0 0 1px var(--primary), var(--shadow-action); }
+.card input:checked + .cardSurface .indicator { background: var(--primary); border-color: var(--primary); }
+.card input:checked + .cardSurface .selection { color: var(--primary); font-weight: 600; }
+.card input:focus-visible + .cardSurface { outline: 3px solid var(--brand-violet); outline-offset: 5px; }
+.fieldset:disabled .card { cursor: wait; }
+.continue { width: 100%; max-width: 360px; margin: 32px auto 0; }
+.continue p { min-height: 24px; text-align: center; color: var(--muted-foreground); font-size: 12px; margin-block: 12px 0; }
+.note { color: var(--muted-foreground); text-align: center; font-size: 12px; line-height: 2; max-width: 620px; margin: 24px auto 0; }
+.footer { color: var(--muted-foreground); font-size: 11px; }
+@media (hover: hover) and (pointer: fine) { .card:hover .cardSurface { border-color: var(--primary); box-shadow: var(--shadow-card); } }
+@media (max-width: 600px) { .page { padding-block: 24px 16px; } .main { padding-block: 40px 32px; } .intro { margin-bottom: 24px; } .cards { grid-template-columns: minmax(0, 1fr); gap: 16px; } .cardSurface { padding: 24px; } .cardTop { margin-bottom: 16px; } .icon { width: 52px; height: 52px; } .benefits { margin-block: 20px; gap: 8px; } .title { font-size: 22px; } .footer { gap: 12px; flex-wrap: wrap; } }

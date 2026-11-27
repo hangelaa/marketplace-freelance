@@ -13,7 +13,7 @@ test("protected welcome rejects anonymous visitors", async ({ page }) => {
   await expect(page).toHaveURL(/\/login\/\?expired=1/);
   await expect(page.getByText("نشست شما پایان یافته است. برای ادامه دوباره وارد شوید.")).toBeVisible();
 });
-test("Persian validation, password visibility, and scope notices are accessible", async ({ page }) => {
+test("Persian validation, password visibility, and password recovery are accessible", async ({ page }) => {
   await page.goto("/login/");
   await page.getByRole("button", { name: "ورود به حساب کاربری" }).click();
   await expect(page.getByText("ایمیل خود را وارد کنید.")).toBeVisible();
@@ -27,8 +27,9 @@ test("Persian validation, password visibility, and scope notices are accessible"
   await expect(page.locator("#password")).toHaveAttribute("type", "text");
   await page.getByRole("button", { name: "پنهان کردن رمز عبور", exact: true }).click();
   await expect(page.locator("#password")).toHaveAttribute("type", "password");
-  await page.getByRole("button", { name: "رمزت را فراموش کردی؟" }).click();
-  await expect(page.getByRole("status")).toContainText("بازیابی رمز عبور در این مرحله فعال نیست");
+  await page.getByRole("link", { name: "رمز عبور خود را فراموش کرده ای ؟" }).click();
+  await expect(page).toHaveURL(/\/forgot-password\/$/);
+  await expect(page.getByLabel("آدرس ایمیل")).toBeVisible();
 });
 test("incorrect credentials show a generic Persian error and recover submit state", async ({ page }) => {
   await page.goto("/login/");
@@ -78,7 +79,7 @@ for (const viewport of [{width:1440,height:1000}, {width:768,height:1024}, {widt
     await page.evaluate(() => document.fonts.ready);
     await expect(page.locator(".auth-content")).toHaveCSS("opacity", "1");
     await expect(page.locator("html")).toHaveAttribute("dir", "rtl");
-    await expect(page.getByRole("heading", { name: /به پیوند خوش برگشتی/ })).toBeVisible();
+    await expect(page.getByRole("heading", { name: "ورود به حساب کاربری", exact: true })).toBeVisible();
     expect(await page.evaluate(() => document.documentElement.scrollWidth <= innerWidth)).toBe(true);
     expect(await page.evaluate(() => document.fonts.check('400 16px "Vazirmatn Variable"'))).toBe(true);
     if (process.env.EVIDENCE_DIR) await page.screenshot({ path: path.join(process.env.EVIDENCE_DIR, `login-${viewport.width}.png`), fullPage: true });
@@ -115,7 +116,11 @@ test("keyboard skip link and field navigation remain usable", async ({ page }) =
   await page.keyboard.press("Tab");
   await expect(page.locator("#email")).toBeFocused();
   await page.keyboard.press("Tab");
-  await expect(page.getByRole("button", { name: "رمزت را فراموش کردی؟" })).toBeFocused();
+  await expect(page.locator("#password")).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("button", { name: "نمایش رمز عبور", exact: true })).toBeFocused();
+  await page.keyboard.press("Tab");
+  await expect(page.getByRole("link", { name: "رمز عبور خود را فراموش کرده ای ؟" })).toBeFocused();
 });
 test("mobile welcome is readable without horizontal overflow", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });

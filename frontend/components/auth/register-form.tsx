@@ -19,10 +19,13 @@ import { registerSchema, type RegisterValues } from "@/lib/auth/schema";
 import { register as registerAccount } from "@/lib/api/auth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { registrationDestination, roleContent, type OnboardingRole } from "@/lib/auth/onboarding";
 export function RegisterForm({
   unavailable = false,
+  role = null,
 }: {
   unavailable?: boolean;
+  role?: OnboardingRole | null;
 }) {
   const [visible, setVisible] = useState(false);
   const [error, setError] = useState("");
@@ -45,7 +48,7 @@ export function RegisterForm({
     setError("");
     try {
       await registerAccount(values);
-      window.location.replace("/welcome/");
+      window.location.replace(registrationDestination());
     } catch (reason) {
       setError(
         reason instanceof Error
@@ -70,6 +73,10 @@ export function RegisterForm({
       <h1 className="form-heading">ساخت حساب کاربری</h1>
       <p className="form-description">
         به پیوند خوش آمدی! برای ساخت حساب، اطلاعات زیر را وارد کن.
+      </p>
+      <p className="form-description session-feedback">
+        {role ? `مسیر شروع: ${roleContent[role].title}` : "می‌خواهی مسیر شروع همکاری‌ات را انتخاب کنی؟"}{" "}
+        <Link href="/role-selection/" className="text-link">{role ? "تغییر مسیر" : "انتخاب مسیر"}</Link>
       </p>
       {unavailable && (
         <p className="form-feedback session-feedback" role="status">

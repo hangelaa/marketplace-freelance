@@ -1,12 +1,16 @@
 import json
+import hashlib
 import re
 from unittest.mock import patch
 
+from django.contrib.auth import authenticate
 from django.core import mail
 from django.core.cache import cache
 from django.db import connection
-from django.test import TestCase
+from django.test import RequestFactory, TestCase
 from django.urls import reverse
+
+from accounts.registration import api_register
 
 # ساختار جدول dbo.Users شبیه schema.sql (برای تست روی SQLite)
 USERS_DDL = """
@@ -32,9 +36,20 @@ class RegistrationFlowTests(TestCase):
         # SQLite اسکیمای dbo را ندارد؛ یک دیتابیس حافظه‌ای با نام dbo وصل می‌کنیم
         connection.ensure_connection()
         connection.connection.create_function("SYSDATETIME", 0, lambda: "2026-01-01 00:00:00")
+        connection.connection.create_function(
+            "HASH_PASSWORD", 1,
+            lambda value: hashlib.sha256(value.encode("utf-16le")).hexdigest(),
+        )
         with connection.cursor() as cursor:
             cursor.execute("ATTACH DATABASE ':memory:' AS dbo")
             cursor.execute(USERS_DDL)
+            cursor.execute("""
+                CREATE TRIGGER dbo.hash_password AFTER INSERT ON Users
+                BEGIN
+                    UPDATE Users SET PasswordHash = HASH_PASSWORD(NEW.PasswordHash)
+                    WHERE UserID = NEW.UserID;
+                END
+            """)
         super().setUpClass()
 
     def setUp(self):
@@ -86,6 +101,17 @@ class RegistrationFlowTests(TestCase):
         self.assertEqual(self.login().status_code, 200)
         self.assertEqual(self.client.get(reverse("api-me")).json()["name"], "Hana Hatami")
         self.assertEqual(self.login(password="Wrong!Pass-999").status_code, 401)
+
+    def test_register_with_database_password_trigger_can_login(self):
+        factory = RequestFactory()
+        registration_request = factory.post(
+            "/api/auth/register/",
+            data=json.dumps({"fullName": "Hana Hatami", "email": "hana@example.test", "password": STRONG}),
+            content_type="application/json",
+        )
+        self.assertEqual(api_register(registration_request).status_code, 201)
+        login_request = factory.post("/api/auth/login/", content_type="application/json")
+        self.assertIsNotNone(authenticate(login_request, email="hana@example.test", password=STRONG))
 
     # ---------- بازیابی رمز
     def reset_link(self):
